@@ -11,9 +11,9 @@ export default function DashboardPage() {
             <h1>Overview</h1>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16}}>
                 <StatCard label='Total Tasks' value={total} />
-                <StatCard label='Done' value={done} color='#059669' />
-                <StatCard label='In Progress' value={inProg} color='#D97706' />
-                <StatCard label='To Do' value={todo} color='#64748B' />
+                <StatCard label='Done' value={done} color="var(--success)" />
+                <StatCard label='In Progress' value={inProg} color="var(--warning)" />
+                <StatCard label='To Do' value={todo} color="var(--text-secondary)" />
             </div>
         </div>
     );

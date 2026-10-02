@@ -15,7 +15,7 @@ export default function ProjectsPage() {
                 >
                     <div className="card">
                         <h3>{p.name}</h3>
-                        <p style={{ color:'#64748B' }}>{p.description}</p>
+                        <p className="project-description">{p.description}</p>
                     </div>
                 </Link>
             ))}

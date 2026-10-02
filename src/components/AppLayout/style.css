@@ -5,13 +5,13 @@
 
 .sidebar {
   width: 220px;
-  background: #0f172a;
-  color: #fff;
+  background: var(--sidebar-bg);
+  color: var(--bg);
   padding: 16px;
 }
 
 .sidebar-title {
-  color: #93c5fd;
+  color: var(--sidebar-title);
   margin-bottom: 24px;
 }
 

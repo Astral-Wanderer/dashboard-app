@@ -15,16 +15,7 @@ export default function ProjectDetailPage() {
             <p>{project.description}</p>
             <h2>Tasks ({tasks.length})</h2>
             {tasks.map(t => (
-                <div 
-                    key={t.id} 
-                    className="task-row"
-                    style={{ 
-                        padding: 12, 
-                        background: '#fff', 
-                        borderRadius: 8, 
-                        marginBottom: 8 
-                    }}
-                >
+                <div key={t.id} className="task-row project-task">
                     <span>{t.title}</span>
                     <StatusBadge status={t.status} />
                 </div>

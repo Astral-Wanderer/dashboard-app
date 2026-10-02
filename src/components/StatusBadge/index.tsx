@@ -2,9 +2,9 @@ import "./style.css";
 import type { Status } from '../../types';
 
 const COLORS: Record<Status, string> = {
-    TODO: '#64748B',
-    IN_PROGRESS: '#D97706',
-    DONE: '#059669',
+    TODO: 'var(--text-secondary)',
+    IN_PROGRESS: 'var(--warning)',
+    DONE: 'var(--success)',
 };
 
 interface Props { status: Status }
