@@ -17,9 +17,8 @@ export default function ProjectDetailPage() {
             {tasks.map(t => (
                 <div 
                     key={t.id} 
+                    className="task-row"
                     style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
                         padding: 12, 
                         background: '#fff', 
                         borderRadius: 8, 

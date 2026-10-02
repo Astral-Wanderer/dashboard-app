@@ -14,21 +14,8 @@ export default function TasksPage() {
             <h1>Tasks</h1>
             
             {mockTasks.map(task => (
-                <div 
-                    key={task.id} 
-                    style={{ 
-                        background:'#fff', 
-                        borderRadius:8, 
-                        padding:16, 
-                        marginBottom:12 
-                    }}
-                >
-                    <div 
-                        style={{ 
-                            display:'flex', 
-                            justifyContent:'space-between' 
-                        }}
-                    >
+                <div key={task.id} className="card">
+                    <div className="task-row">
                         <strong>{task.title}</strong>
                         <StatusBadge status={task.status} />
                     </div>

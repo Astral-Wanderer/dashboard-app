@@ -13,14 +13,7 @@ export default function ProjectsPage() {
                 style={{ textDecoration: 'none' }} 
                 key={p.id}
                 >
-                    <div 
-                        style={{
-                            background: '#fff', 
-                            borderRadius:8, 
-                            padding: 16, 
-                            marginBottom: 12 
-                        }}
-                    >
+                    <div className="card">
                         <h3>{p.name}</h3>
                         <p style={{ color:'#64748B' }}>{p.description}</p>
                     </div>
