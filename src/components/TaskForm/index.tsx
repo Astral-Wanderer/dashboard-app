@@ -16,6 +16,7 @@ const DEFAULT: TaskFormData = {
 };
 
 export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
+    
     const [form, setForm] = useState<TaskFormData>({
         ...DEFAULT,
         ...initialData
