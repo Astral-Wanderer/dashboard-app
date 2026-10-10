@@ -11,6 +11,7 @@ export default function TasksPage() {
     // Local state for the task list and form visibility
     const [tasks, setTasks] = useState<Task[]>(mockTasks);
     const [showForm, setShowForm] = useState(false);
+    const [editingTask, setEditingTask] = useState<Task | null>(null);
 
     const isLoading = false; // will become a real query state in Week 5
 
@@ -26,6 +27,16 @@ export default function TasksPage() {
         setShowForm(false);
     }
 
+    function handleUpdate(data: TaskFormData) {
+        if (!editingTask) return;
+
+        setTasks(prev => prev.map(t =>
+            t.id === editingTask.id ? { ...t, ...data} : t
+        ));
+
+        setEditingTask(null);
+    }
+
     function handleDelete(id: string) {
         setTasks(prev => prev.filter(t => t.id !== id));
     }
@@ -39,10 +50,14 @@ export default function TasksPage() {
 
             <button onClick={() => setShowForm(true)}>+ New Task</button>
 
-            {showForm && (
+            {(showForm || editingTask) && (
                 <TaskForm
+                    initialData={editingTask ?? undefined}
                     onSubmit={handleCreate}
-                    onCancel={() => setShowForm(false)}
+                    onCancel={() => {
+                        setShowForm(false);
+                        setEditingTask(null);
+                    }}
                 />
             )}
             
@@ -53,6 +68,7 @@ export default function TasksPage() {
                         <StatusBadge status={task.status} />
                     </div>
 
+                    <button onClick={() => setEditingTask(task)}>Edit</button>
                     <button onClick={() => handleDelete(task.id)}>Delete</button>
                 </div>
             ))}
