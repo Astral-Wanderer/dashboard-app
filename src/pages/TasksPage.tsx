@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Task, TaskFormData } from '../types';
+import type { Task, TaskFormData, Status } from '../types';
 import { mockTasks } from '../utils/mockData';
 import TaskForm from '../components/TaskForm';
 import StatusBadge from '../components/StatusBadge';
@@ -12,6 +12,16 @@ export default function TasksPage() {
     const [tasks, setTasks] = useState<Task[]>(mockTasks);
     const [showForm, setShowForm] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
+
+    // Search and status filter states
+    const [search, setSearch] = useState('');
+    const [statusFilter, setStatusFilter] = useState<Status | 'ALL'>('ALL');
+
+    const filteredTasks = tasks.filter(t => {
+        const matchSearch = t.title.toLowerCase().includes(search.toLowerCase());
+        const matchStatus = statusFilter === 'ALL' || t.status === statusFilter;
+        return matchSearch && matchStatus;
+    });
 
     const isLoading = false; // will become a real query state in Week 5
 
@@ -50,6 +60,24 @@ export default function TasksPage() {
 
             <button onClick={() => setShowForm(true)}>+ New Task</button>
 
+            {/* Search and status filters */}
+            <input
+                placeholder='Search tasks...'
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+            />
+
+            <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value as Status | 'ALL')}
+            >
+                <option value="ALL">All Statuses</option>
+                <option value="TODO">To Do</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="DONE">Done</option>
+            </select>
+        
+            {/* Task form for creating or editing tasks */}
             {(showForm || editingTask) && (
                 <TaskForm
                     initialData={editingTask ?? undefined}
@@ -61,7 +89,8 @@ export default function TasksPage() {
                 />
             )}
             
-            {tasks.map(task => (
+            {/* Render tasks matching the search and status filter */}
+            {filteredTasks.map(task => (
                 <div key={task.id} className="card">
                     <div className="task-row">
                         <strong>{task.title}</strong>
