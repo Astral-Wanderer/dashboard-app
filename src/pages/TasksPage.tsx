@@ -1,3 +1,4 @@
+import Modal from '../components/Modal';
 import { useState } from 'react';
 import type { Task, TaskFormData, Status } from '../types';
 import { mockTasks } from '../utils/mockData';
@@ -77,17 +78,24 @@ export default function TasksPage() {
                 <option value="DONE">Done</option>
             </select>
         
-            {/* Task form for creating or editing tasks */}
-            {(showForm || editingTask) && (
+            {/* Display the task form inside a modal */}
+            <Modal
+                isOpen={showForm || !!editingTask}
+                onClose={() => {
+                    setShowForm(false);
+                    setEditingTask(null);
+                }}
+                title={editingTask ? 'Edit Task' : 'New Task'}
+            >
                 <TaskForm
                     initialData={editingTask ?? undefined}
-                    onSubmit={handleCreate}
+                    onSubmit={editingTask ? handleUpdate : handleCreate}
                     onCancel={() => {
                         setShowForm(false);
                         setEditingTask(null);
                     }}
                 />
-            )}
+            </Modal>
             
             {/* Render tasks matching the search and status filter */}
             {filteredTasks.map(task => (
