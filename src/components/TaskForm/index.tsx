@@ -1,3 +1,4 @@
+import { mockProjects } from '../../utils/mockData';
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import type { Status, TaskFormData } from '../../types';
 
@@ -42,6 +43,12 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
             return;
         }
 
+        // Prevent submitting a task without a valid project
+        if (!mockProjects.some(project => project.id === form.projectId)) {
+            alert('Please select a valid project');
+            return;
+        }
+
         onSubmit(form);
     }
 
@@ -69,6 +76,21 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
                 <option value="TODO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="DONE">Done</option>
+            </select>
+
+            {/* Select the project associated with this task */}
+            <select
+                name="projectId"
+                value={form.projectId}
+                onChange={handleChange}
+                required
+            >
+                <option value="">Select a project</option>
+                {mockProjects.map(project => (
+                    <option key={project.id} value={project.id}>
+                        {project.name}
+                    </option>
+                ))}
             </select>
 
             <button type="submit">Save</button>
