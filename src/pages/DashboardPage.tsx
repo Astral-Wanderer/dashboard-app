@@ -1,3 +1,4 @@
+import './DashboardPage.css';
 import { mockTasks, mockProjects } from "../utils/mockData";
 import StatCard from '../components/StatCard';
 
@@ -9,7 +10,8 @@ export default function DashboardPage() {
     return (
         <div>
             <h1>Overview</h1>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16}}>
+            {/* Dashboard statistics grid */}
+            <div className="stats-grid">
                 <StatCard label='Total Tasks' value={total} />
                 <StatCard label='Done' value={done} color="var(--success)" />
                 <StatCard label='In Progress' value={inProg} color="var(--warning)" />

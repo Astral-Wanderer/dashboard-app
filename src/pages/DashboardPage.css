@@ -1,0 +1,6 @@
+/* Responsive dashboard statistics grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+    gap: 16px;
+}
