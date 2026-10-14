@@ -1,3 +1,5 @@
+
+import NotFoundPage from './pages/NotFoundPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import DashboardPage from './pages/DashboardPage';
@@ -15,6 +17,7 @@ export default function App() {
           <Route path='projects' element={<ProjectsPage />} />
           <Route path='projects/:id' element={<ProjectDetailPage/>} />
           <Route path='tasks' element={<TasksPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
