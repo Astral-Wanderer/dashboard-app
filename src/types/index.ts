@@ -7,6 +7,13 @@ export interface Project {
     createdAt: string;
 }
 
+// Represents the user's editable data of the project form
+export interface ProjectFormData {
+    name: string;
+    description: string;
+
+}
+
 // Represents a complete task stored in the application
 export interface Task {
     id: string;
