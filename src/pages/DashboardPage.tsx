@@ -1,5 +1,5 @@
 import './DashboardPage.css';
-import { mockTasks, mockProjects } from "../utils/mockData";
+import { mockTasks } from "../utils/mockData";
 import StatCard from '../components/StatCard';
 
 export default function DashboardPage() {

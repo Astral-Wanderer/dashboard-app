@@ -1,6 +1,6 @@
 import { mockProjects } from '../../utils/mockData';
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import type { Status, TaskFormData } from '../../types';
+import type { TaskFormData } from '../../types';
 
 interface Props {
     initialData?: Partial<TaskFormData>;
