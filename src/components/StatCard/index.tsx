@@ -5,7 +5,7 @@ interface Props {
     color?: string;
 }
 
-export default function StatCard({ label, value, color = '#2563EB' }: Props) {
+export default function StatCard({ label, value, color = 'var(--stat-card-default)' }: Props) {
     return (
         <div className="stat-card">
             <p className="stat-card-label">{label}</p>

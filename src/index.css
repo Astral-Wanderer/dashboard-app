@@ -12,6 +12,8 @@
   --sidebar-bg: #0f172a;
   --success: #059669;
   --warning: #d97706;
+  --modal-backdrop: #0008;
+  --stat-card-default: #2563EB;
 
   /* Background colors for task status badges */
   --status-todo-bg: #64748b22;
