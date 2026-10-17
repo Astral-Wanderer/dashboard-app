@@ -2,9 +2,9 @@ import "./style.css";
 import type { Status } from '../../types';
 
 const COLORS: Record<Status, string> = {
-    TODO: 'var(--text-secondary)',
-    IN_PROGRESS: 'var(--warning)',
-    DONE: 'var(--success)',
+    TODO: 'var(--status-todo-text)',
+    IN_PROGRESS: 'var(--status-in-progress-text)',
+    DONE: 'var(--status-done-text)',
 };
 
 // Background colors for each task status

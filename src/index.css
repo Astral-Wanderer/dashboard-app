@@ -15,11 +15,16 @@
   --modal-backdrop: #0008;
   --stat-card-default: #2563EB;
 
-  /* Background colors for task status badges */
+  /* Status badge colors - Light Mode */
+  --status-todo-text: #475569;
   --status-todo-bg: #64748b22;
+
+  --status-in-progress-text: #92499e;
   --status-in-progress-bg: #d9770622;
 
+  --status-done-text: #166534;
   --status-done-bg: #05966922;
+
   --sidebar-title: #93c5fd;
   --spinner-border: #e2e8f0;
   --spinner-border-top: #2563eb;
@@ -58,10 +63,17 @@
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
-    /* Task status backgrounds in dark mode */
-    --status-todo-bg: #64748b33;
-    --status-in-progress-bg: #d9770633;
-    --status-done-bg: #05966933;
+
+    /* Status badge colors - Dark Mode */
+    --status-todo-text: #cbd5e1;
+    --status-todo-bg: #334155;
+
+    --status-in-progress-text: #fcd34d;
+    --status-in-progress-bg: #78350f;
+
+    --status-done-text: #86efac;
+    --status-done-bg: #14532d;
+
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
