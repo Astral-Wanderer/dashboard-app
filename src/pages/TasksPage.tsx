@@ -1,3 +1,8 @@
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setSearchText, setStatusFilter } from '../features/uiSlice';
+import { selectSearchText, selectStatusFilter } from '../features/uiSelectors';
+import { openTaskModal, closeTaskModal } from '../features/uiSlice';
+import { selectTaskModalOpen } from '../features/uiSelectors';
 import Modal from '../components/Modal';
 import { useState } from 'react';
 import type { Task, TaskFormData, Status } from '../types';
@@ -11,15 +16,17 @@ export default function TasksPage() {
 
     // Local state for the task list and form visibility
     const [tasks, setTasks] = useState<Task[]>(mockTasks);
-    const [showForm, setShowForm] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
 
     // Search and status filter states
-    const [search, setSearch] = useState('');
-    const [statusFilter, setStatusFilter] = useState<Status | 'ALL'>('ALL');
+    const dispatch = useAppDispatch();
+    const searchText = useAppSelector(selectSearchText);
+    const statusFilter = useAppSelector(selectStatusFilter);
+
+    const taskModalOpen = useAppSelector(selectTaskModalOpen);
 
     const filteredTasks = tasks.filter(t => {
-        const matchSearch = t.title.toLowerCase().includes(search.toLowerCase());
+        const matchSearch = t.title.toLowerCase().includes(searchText.toLowerCase());
         const matchStatus = statusFilter === 'ALL' || t.status === statusFilter;
         return matchSearch && matchStatus;
     });
@@ -35,7 +42,7 @@ export default function TasksPage() {
         };
 
         setTasks(prev => [...prev, newTask]);
-        setShowForm(false);
+        dispatch(closeTaskModal());
     }
 
     function handleUpdate(data: TaskFormData) {
@@ -46,6 +53,7 @@ export default function TasksPage() {
         ));
 
         setEditingTask(null);
+        dispatch(closeTaskModal());
     }
 
     function handleDelete(id: string) {
@@ -59,18 +67,18 @@ export default function TasksPage() {
         <div>
             <h1>Tasks</h1>
 
-            <button onClick={() => setShowForm(true)}>+ New Task</button>
+            <button onClick={() => dispatch(openTaskModal())}>+ New Task</button>
 
             {/* Search and status filters */}
             <input
                 placeholder='Search tasks...'
-                value={search}
-                onChange={e => setSearch(e.target.value)}
+                value={searchText}
+                onChange={e => dispatch(setSearchText(e.target.value))}
             />
 
             <select
                 value={statusFilter}
-                onChange={e => setStatusFilter(e.target.value as Status | 'ALL')}
+                onChange={e => dispatch(setStatusFilter(e.target.value as Status | 'ALL'))}
             >
                 <option value="ALL">All Statuses</option>
                 <option value="TODO">To Do</option>
@@ -80,9 +88,9 @@ export default function TasksPage() {
         
             {/* Display the task form inside a modal */}
             <Modal
-                isOpen={showForm || !!editingTask}
+                isOpen={taskModalOpen || !!editingTask}
                 onClose={() => {
-                    setShowForm(false);
+                    dispatch(closeTaskModal());
                     setEditingTask(null);
                 }}
                 title={editingTask ? 'Edit Task' : 'New Task'}
@@ -91,11 +99,12 @@ export default function TasksPage() {
                     initialData={editingTask ?? undefined}
                     onSubmit={editingTask ? handleUpdate : handleCreate}
                     onCancel={() => {
-                        setShowForm(false);
+                        dispatch(closeTaskModal());
                         setEditingTask(null);
                     }}
                 />
             </Modal>
+
             
             {/* Render tasks matching the search and status filter */}
             {filteredTasks.map(task => (

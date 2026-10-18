@@ -5,5 +5,5 @@ import type { RootState } from '../app/store';
 export const selectSearchText = (s: RootState) => s.ui.searchText;
 export const selectStatusFilter = (s: RootState) => s.ui.statusFilter;
 export const selectSelectedProject = (s: RootState) => s.ui.selectedProject;
-export const selectedSidebarCollapsed = (s: RootState) => s.ui.sidebarCollapsed;
-export const selectTasModalOpen = (s: RootState) => s.ui.taskModalOpen;
+export const selectSidebarCollapsed = (s: RootState) => s.ui.sidebarCollapsed;
+export const selectTaskModalOpen = (s: RootState) => s.ui.taskModalOpen;
