@@ -1,8 +1,8 @@
-
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Status } from '../types';
 
+// defines which UI Data Redux should store
 interface UiState {
   searchText: string;
   statusFilter: Status | 'ALL';
@@ -11,6 +11,7 @@ interface UiState {
   taskModalOpen: boolean;
 }
 
+// states the initial values
 const initialState: UiState = {
   searchText: '',
   statusFilter: 'ALL',
@@ -19,9 +20,11 @@ const initialState: UiState = {
   taskModalOpen: false,
 };
 
+// creates the Redux slice for the user interface
 const uiSlice = createSlice({
   name: 'ui',
   initialState,
+  // define how these values can be changed
   reducers: {
     setSearchText(state, action: PayloadAction<string>) {
       state.searchText = action.payload;
@@ -51,6 +54,6 @@ export const {
   toggleSidebar,
   openTaskModal,
   closeTaskModal
-} = uiSlice.actions;
+} = uiSlice.actions; // provides the corresponding actions
 
 export default uiSlice.reducer;
