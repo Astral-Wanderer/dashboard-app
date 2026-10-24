@@ -6,7 +6,30 @@ import ProjectsPage from './pages/ProjectsPage';
 import TasksPage from './pages/TasksPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { toggleSidebar } from './features/uiSlice';
+import { selectSidebarCollapsed } from './features/uiSelectors';
+
+
 export default function App() {
+  
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const collapsed = localStorage.getItem('sidebarCollapsed');
+
+    if (collapsed === 'true') {
+      dispatch(toggleSidebar());
+    }
+  }, [dispatch]);
+
+  const collapsed = useAppSelector(selectSidebarCollapsed);
+
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', String(collapsed));
+  }, [collapsed]);
+
 
   return (
     <BrowserRouter>
