@@ -1,31 +1,43 @@
 import { useState } from 'react';
-import { mockProjects } from '../utils/mockData';
 import type { Project, ProjectFormData } from '../types';
 import { Link } from 'react-router-dom';
 import ProjectForm from '../components/ProjectForm';
+import { useQuery } from '@apollo/client/react';
+import { GET_PROJECTS } from '../graphql/queries';
+import LoadingSpinner from '../components/LoadingSpinner';
+import EmptyState from '../components/EmptyState';
 
 export default function ProjectsPage() {
 
-    // local state for the prject list
-    const [projects, setProjects] = useState<Project[]>(mockProjects);
+    const { loading, error, data } = useQuery<{
+        projects: Project[];
+    }>(GET_PROJECTS);
+
+    const projects = data?.projects ?? [];
 
     // Controls the visibility of the project form
     const [showForm, setShowForm] = useState(false);
 
     // Create a new project from the submitted form data
     function handleCreate(data: ProjectFormData) {
-        const newProject: Project = {
-            ...data,
-            id: Date.now().toString(),
-            createdAt: new Date().toISOString(),
-        };
-
-        setProjects(prev => [...prev, newProject]);
+        console.log('Create project:', data);
         setShowForm(false);
     }
 
     function handleDelete(id: string) {
-        setProjects(prev => prev.filter(p => p.id !== id));
+        console.log('Delete project:', id);
+    }
+
+    if (loading) return <LoadingSpinner />;
+
+    if (error) {
+        return <p style={{ color: 'red' }}>
+            Error: {error.message}
+        </p>;
+    }
+
+    if (projects.length === 0) {
+        return <EmptyState message="No projects yet." />;
     }
 
     return (

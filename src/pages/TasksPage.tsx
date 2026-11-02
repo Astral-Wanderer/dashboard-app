@@ -6,7 +6,8 @@ import { selectTaskModalOpen } from '../features/uiSelectors';
 import Modal from '../components/Modal';
 import { useState } from 'react';
 import type { Task, TaskFormData, Status } from '../types';
-import { mockTasks } from '../utils/mockData';
+import { useQuery } from '@apollo/client';
+import { GET_TASKS } from '../graphql/queries';
 import TaskForm from '../components/TaskForm';
 import StatusBadge from '../components/StatusBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -14,8 +15,12 @@ import EmptyState from '../components/EmptyState';
 
 export default function TasksPage() {
 
-    // Local state for the task list and form visibility
-    const [tasks, setTasks] = useState<Task[]>(mockTasks);
+    const { loading, error, data } = useQuery<{
+        tasks: Task[];
+    }>(GET_TASKS);
+
+    const tasks = data?.tasks ?? [];
+
     const [editingTask, setEditingTask] = useState<Task | null>(null);
 
     // Search and status filter states
@@ -31,37 +36,32 @@ export default function TasksPage() {
         return matchSearch && matchStatus;
     });
 
-    const isLoading = false; // will become a real query state in Week 5
-
     // Create a new task from the submitted form data
     function handleCreate(data: TaskFormData) {
-        const newTask: Task = {
-            ... data,
-            id: Date.now().toString(),
-            createdAt: new Date().toISOString(),
-        };
-
-        setTasks(prev => [...prev, newTask]);
+        console.log('Create task:', data);
         dispatch(closeTaskModal());
     }
 
     function handleUpdate(data: TaskFormData) {
         if (!editingTask) return;
 
-        setTasks(prev => prev.map(t =>
-            t.id === editingTask.id ? { ...t, ...data} : t
-        ));
+        console.log('Update task:', editingTask.id, data);
 
         setEditingTask(null);
         dispatch(closeTaskModal());
     }
 
     function handleDelete(id: string) {
-        setTasks(prev => prev.filter(t => t.id !== id));
+        console.log('Delete task:', id);
     }
 
-    if (isLoading) return <LoadingSpinner />;
-    if (tasks.length === 0) return <EmptyState message='No tasks found.' />;
+    if (loading) return <LoadingSpinner />;
+
+    if (error) {
+        return <p style={{ color: 'red' }}>
+            Error loading tasks: {error.message}
+        </p>;
+    }
 
     return (
         <div>
@@ -105,6 +105,9 @@ export default function TasksPage() {
                 />
             </Modal>
 
+            {filteredTasks.length === 0 && (
+                <EmptyState message="No tasks found." />
+            )}
             
             {/* Render tasks matching the search and status filter */}
             {filteredTasks.map(task => (
