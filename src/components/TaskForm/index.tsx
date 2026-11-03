@@ -1,6 +1,7 @@
-import { mockProjects } from '../../utils/mockData';
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import type { TaskFormData } from '../../types';
+import { useQuery } from '@apollo/client';
+import { GET_PROJECTS } from '../../graphql/queries';
 
 interface Props {
     initialData?: Partial<TaskFormData>;
@@ -18,6 +19,13 @@ const DEFAULT: TaskFormData = {
 
 export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
     
+    const { data, loading, error } = useQuery<{
+        projects: { id: string; name: string }[];
+    }>(GET_PROJECTS);
+
+    const projects = data?.projects ?? [];
+
+
     const [form, setForm] = useState<TaskFormData>({
         ...DEFAULT,
         ...initialData
@@ -43,9 +51,7 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
             return;
         }
 
-        // Prevent submitting a task without a valid project
-        if (!mockProjects.some(project => project.id === form.projectId)) {
-            alert('Please select a valid project');
+    if (!projects.some(project => project.id === form.projectId)) {            alert('Please select a valid project');
             return;
         }
 
@@ -86,7 +92,7 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
                 required
             >
                 <option value="">Select a project</option>
-                {mockProjects.map(project => (
+                {projects.map(project => (
                     <option key={project.id} value={project.id}>
                         {project.name}
                     </option>

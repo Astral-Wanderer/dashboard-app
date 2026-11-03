@@ -12,6 +12,14 @@ import TaskForm from '../components/TaskForm';
 import StatusBadge from '../components/StatusBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
+import { useMutation } from '@apollo/client';
+
+import {
+  CREATE_TASK,
+  UPDATE_TASK,
+  DELETE_TASK
+} from '../graphql/mutations';
+
 
 export default function TasksPage() {
 
@@ -30,38 +38,73 @@ export default function TasksPage() {
 
     const taskModalOpen = useAppSelector(selectTaskModalOpen);
 
+    // GraphQL Mutations
+    const [createTask] = useMutation(CREATE_TASK, {
+        refetchQueries: [{ query: GET_TASKS }],
+    });
+
+    const [updateTask] = useMutation(UPDATE_TASK, {
+        refetchQueries: [{ query: GET_TASKS }],
+    });
+
+    const [deleteTask] = useMutation(DELETE_TASK, {
+        refetchQueries: [{ query: GET_TASKS }],
+    });
+
+    // Filter tasks
     const filteredTasks = tasks.filter(t => {
         const matchSearch = t.title.toLowerCase().includes(searchText.toLowerCase());
         const matchStatus = statusFilter === 'ALL' || t.status === statusFilter;
         return matchSearch && matchStatus;
     });
+    
+    async function handleCreate(data: TaskFormData) {
+        try {
+            await createTask({
+                variables: {
+                    title: data.title,
+                    description: data.description,
+                    status: data.status,
+                    projectId: data.projectId,
+                },
+            });
 
-    // Create a new task from the submitted form data
-    function handleCreate(data: TaskFormData) {
-        console.log('Create task:', data);
-        dispatch(closeTaskModal());
+            dispatch(closeTaskModal());
+        } catch (error) {
+            console.error('Error creating task:', error);
+        }
     }
 
-    function handleUpdate(data: TaskFormData) {
+    async function handleUpdate(data: TaskFormData) {
         if (!editingTask) return;
 
-        console.log('Update task:', editingTask.id, data);
+        try {
+            await updateTask({
+                variables: {
+                    id: editingTask.id,
+                    title: data.title,
+                    description: data.description,
+                    status: data.status,
+                },
+            });
 
-        setEditingTask(null);
-        dispatch(closeTaskModal());
+            setEditingTask(null);
+            dispatch(closeTaskModal());
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     }
 
-    function handleDelete(id: string) {
-        console.log('Delete task:', id);
+    async function handleDelete(id: string) {
+        try {
+            await deleteTask({
+                variables: { id },
+            });
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
     }
 
-    if (loading) return <LoadingSpinner />;
-
-    if (error) {
-        return <p style={{ color: 'red' }}>
-            Error loading tasks: {error.message}
-        </p>;
-    }
 
     return (
         <div>
