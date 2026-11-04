@@ -1,8 +1,9 @@
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_PROJECT, DELETE_PROJECT } from '../graphql/mutations';
 import { useState } from 'react';
 import type { Project, ProjectFormData } from '../types';
 import { Link } from 'react-router-dom';
 import ProjectForm from '../components/ProjectForm';
-import { useQuery } from '@apollo/client/react';
 import { GET_PROJECTS } from '../graphql/queries';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
@@ -18,14 +19,44 @@ export default function ProjectsPage() {
     // Controls the visibility of the project form
     const [showForm, setShowForm] = useState(false);
 
+    const [createProject] = useMutation(CREATE_PROJECT, {
+        refetchQueries: [{ query: GET_PROJECTS }],
+    });
+
+    const [deleteProject] = useMutation(DELETE_PROJECT, {
+        refetchQueries: [{ query: GET_PROJECTS }],
+    });
+
     // Create a new project from the submitted form data
-    function handleCreate(data: ProjectFormData) {
-        console.log('Create project:', data);
-        setShowForm(false);
+    async function handleCreate(data: ProjectFormData) {
+        try {
+            await createProject({
+                variables: {
+                    name: data.name,
+                    description: data.description,
+                },
+            });
+
+            setShowForm(false);
+        } catch (error) {
+            console.error('Error creating project:', error);
+            alert('Could not create project');
+        }
     }
 
-    function handleDelete(id: string) {
-        console.log('Delete project:', id);
+    async function handleDelete(id: string) {
+        if (!window.confirm('Delete this project?')) {
+            return;
+        }
+
+        try {
+            await deleteProject({
+                variables: { id },
+            });
+        } catch (error) {
+            console.error('Error deleting project:', error);
+            alert('Could not delete project');
+        }
     }
 
     if (loading) return <LoadingSpinner />;
@@ -36,9 +67,6 @@ export default function ProjectsPage() {
         </p>;
     }
 
-    if (projects.length === 0) {
-        return <EmptyState message="No projects yet." />;
-    }
 
     return (
         <div>
@@ -55,6 +83,10 @@ export default function ProjectsPage() {
                 onSubmit={handleCreate}
                 onCancel={() => setShowForm(false)}
             />
+            )}
+
+            {projects.length === 0 && (
+                <EmptyState message="No projects yet." />
             )}
 
             {/* Render projects with their delete actions */}
