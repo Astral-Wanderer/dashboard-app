@@ -19,12 +19,14 @@ export default function ProjectsPage() {
     // Controls the visibility of the project form
     const [showForm, setShowForm] = useState(false);
 
-    const [createProject] = useMutation(CREATE_PROJECT, {
-        refetchQueries: [{ query: GET_PROJECTS }],
+    const [createProject, { loading: creating, error: createError }] =
+        useMutation(CREATE_PROJECT, {
+            refetchQueries: [{ query: GET_PROJECTS }],
     });
 
-    const [deleteProject] = useMutation(DELETE_PROJECT, {
-        refetchQueries: [{ query: GET_PROJECTS }],
+    const [deleteProject, { loading: deleting, error: deleteError }] =
+        useMutation(DELETE_PROJECT, {
+            refetchQueries: [{ query: GET_PROJECTS }],
     });
 
     // Create a new project from the submitted form data
@@ -79,10 +81,21 @@ export default function ProjectsPage() {
 
             {/* Render the form when requested */}
             {showForm && (
-            <ProjectForm
-                onSubmit={handleCreate}
-                onCancel={() => setShowForm(false)}
-            />
+                <>
+                    <ProjectForm
+                        onSubmit={handleCreate}
+                        onCancel={() => setShowForm(false)}
+                        creating={creating}
+                    />
+
+                    {creating && <p>Saving...</p>}
+
+                    {createError && (
+                        <p style={{ color: 'red' }}>
+                            {createError.message}
+                        </p>
+                    )}
+                </>
             )}
 
             {projects.length === 0 && (
@@ -103,11 +116,20 @@ export default function ProjectsPage() {
                     </Link>
 
                     {/* Remove the selected project */}
-                    <button onClick={() => handleDelete(p.id)}>
-                        Delete
+                    <button
+                        onClick={() => handleDelete(p.id)}
+                        disabled={deleting}
+                    >
+                        {deleting ? 'Deleting...' : 'Delete'}
                     </button>
                 </div>
             ))}
+
+            {deleteError && (
+                <p style={{ color: 'red' }}>
+                    {deleteError.message}
+                </p>
+            )}
         </div>
     );
 }

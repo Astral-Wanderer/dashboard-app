@@ -39,16 +39,21 @@ export default function TasksPage() {
     const taskModalOpen = useAppSelector(selectTaskModalOpen);
 
     // GraphQL Mutations
-    const [createTask] = useMutation(CREATE_TASK, {
+    const [
+        createTask,
+        { loading: creating, error: createError }
+    ] = useMutation(CREATE_TASK, {
         refetchQueries: [{ query: GET_TASKS }],
     });
 
-    const [updateTask] = useMutation(UPDATE_TASK, {
-        refetchQueries: [{ query: GET_TASKS }],
+    const [updateTask, { loading: updating, error: updateError }] =
+        useMutation(UPDATE_TASK, {
+            refetchQueries: [{ query: GET_TASKS }],
     });
 
-    const [deleteTask] = useMutation(DELETE_TASK, {
-        refetchQueries: [{ query: GET_TASKS }],
+    const [deleteTask, { loading: deleting, error: deleteError }] =
+        useMutation(DELETE_TASK, {
+            refetchQueries: [{ query: GET_TASKS }],
     });
 
     // Filter tasks
@@ -61,17 +66,12 @@ export default function TasksPage() {
     async function handleCreate(data: TaskFormData) {
         try {
             await createTask({
-                variables: {
-                    title: data.title,
-                    description: data.description,
-                    status: data.status,
-                    projectId: data.projectId,
-                },
+                variables: { ...data }
             });
 
-            dispatch(closeTaskModal());
-        } catch (error) {
-            console.error('Error creating task:', error);
+        dispatch(closeTaskModal());
+        } catch (err) {
+            console.error('Create task failed:', err);
         }
     }
 
@@ -141,11 +141,25 @@ export default function TasksPage() {
                 <TaskForm
                     initialData={editingTask ?? undefined}
                     onSubmit={editingTask ? handleUpdate : handleCreate}
+                    creating={editingTask ? updating : creating}
                     onCancel={() => {
                         dispatch(closeTaskModal());
                         setEditingTask(null);
                     }}
                 />
+
+                {createError && !editingTask && (
+                    <p style={{ color: 'red', fontSize: 12 }}>
+                        {createError.message}
+                    </p>
+                )}
+
+                {updateError && editingTask && (
+                    <p style={{ color: 'red' }}>
+                        {updateError.message}
+                    </p>
+                )}
+
             </Modal>
 
             {filteredTasks.length === 0 && (
@@ -161,9 +175,20 @@ export default function TasksPage() {
                     </div>
 
                     <button onClick={() => setEditingTask(task)}>Edit</button>
-                    <button onClick={() => handleDelete(task.id)}>Delete</button>
+                    <button
+                        onClick={() => handleDelete(task.id)}
+                        disabled={deleting}
+                    >
+                        {deleting ? 'Deleting...' : 'Delete'}
+                    </button>
                 </div>
             ))}
+
+            {deleteError && (
+                <p style={{ color: 'red' }}>
+                    {deleteError.message}
+                </p>
+            )}
         </div>
     );
 }

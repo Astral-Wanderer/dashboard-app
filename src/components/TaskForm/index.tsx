@@ -4,9 +4,10 @@ import { useQuery } from '@apollo/client';
 import { GET_PROJECTS } from '../../graphql/queries';
 
 interface Props {
-    initialData?: Partial<TaskFormData>;
-    onSubmit: (data: TaskFormData) => void;
-    onCancel: () => void;
+  initialData?: Partial<TaskFormData>;
+  onSubmit: (data: TaskFormData) => void;
+  onCancel: () => void;
+  creating?: boolean;
 }
 
 // Default values ensure every form field is controlled from the start
@@ -17,7 +18,7 @@ const DEFAULT: TaskFormData = {
     projectId: ''
 };
 
-export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
+export default function TaskForm({ initialData, onSubmit, onCancel, creating = false }: Props) {
     
     const { data, loading, error } = useQuery<{
         projects: { id: string; name: string }[];
@@ -148,8 +149,11 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
                 )}
             </div>
 
-            <button type="submit" disabled={loading || !!error}>
-                Save
+            <button
+                type="submit"
+                disabled={loading || !!error || creating}
+            >
+                {creating ? 'Saving...' : 'Save'}
             </button>
             
              <button type="button" onClick={onCancel}>

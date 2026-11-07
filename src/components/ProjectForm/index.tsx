@@ -4,9 +4,10 @@ import type { ProjectFormData } from '../../types';
 interface Props {
   onSubmit: (data: ProjectFormData) => void;
   onCancel: () => void;
+  creating?: boolean;
 }
 
-export default function ProjectForm({ onSubmit, onCancel }: Props) {
+export default function ProjectForm({ onSubmit, onCancel, creating = false }: Props) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
@@ -37,7 +38,10 @@ export default function ProjectForm({ onSubmit, onCancel }: Props) {
 
       {/* Form actions */}
       <button type="submit">Create Project</button>
-      <button type="button" onClick={onCancel}>Cancel</button>
+      
+      <button type="submit" disabled={creating}>
+        {creating ? 'Saving...' : 'Create Project'}
+      </button>
     </form>
   );
 }
