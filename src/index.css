@@ -1,4 +1,15 @@
 :root {
+  /* Week 6 - Design Tokens */
+  --color-primary: #2563EB;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-neutral: #64748B;
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-navy: #0F172A;
+
+  --radius-md: 8px;
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
   --text: #6b6375;
   --text-secondary: #64748b;
   --text-h: #08060d;
@@ -9,9 +20,9 @@
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --sidebar-bg: #0f172a;
-  --success: #059669;
-  --warning: #d97706;
+  --sidebar-bg: var(--color-navy);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
   --modal-backdrop: #0008;
   --stat-card-default: #2563EB;
 
@@ -92,6 +103,8 @@
 }
 
 body {
+  background: var(--color-bg);
+  font-family: Inter, system-ui, sans-serif;
   margin: 0;
 }
 
