@@ -23,6 +23,9 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
         projects: { id: string; name: string }[];
     }>(GET_PROJECTS);
 
+    const [errors, setErrors] =
+    useState<Partial<Record<keyof TaskFormData, string>>>({});
+
     const projects = data?.projects ?? [];
 
 
@@ -41,31 +44,63 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
             ...prev,
             [name]: value
         }));
+
+        setErrors(prev => ({
+            ...prev,
+            [name]: undefined
+        }));
     }
 
-    function handleSubmit(e: FormEvent) {
+    function validate(data: TaskFormData) {
+    const e: Partial<Record<keyof TaskFormData, string>> = {};
+
+    if (!data.title.trim()) {
+      e.title = 'Title is required';
+    }
+
+    if (!data.projectId) {
+      e.projectId = 'Project is required';
+    } else if (!projects.some(p => p.id === data.projectId)) {
+      e.projectId = 'Please select a valid project';
+    }
+
+    return e;
+  }
+
+    function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        if (!form.title.trim()) {
-            alert('Title is required');
-            return;
+        const newErrors = validate(form);
+
+        if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
         }
 
-    if (!projects.some(project => project.id === form.projectId)) {            alert('Please select a valid project');
-            return;
-        }
-
-        onSubmit(form);
+        setErrors({});
+        onSubmit({
+        ...form,
+        title: form.title.trim()
+        });
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <input
-                name="title"
-                value={form.title}
-                onChange={handleChange}
-                placeholder="Title"
-            />
+
+            <div>
+                <input
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    placeholder="Title"
+                />
+
+                {errors.title && (
+                    <span style={{ color: 'red', fontSize: 12, display: 'block' }}>
+                        {errors.title}
+                    </span>
+                )}
+            </div>
 
             <textarea
                 name="description"
@@ -84,24 +119,42 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: Props) {
                 <option value="DONE">Done</option>
             </select>
 
-            {/* Select the project associated with this task */}
-            <select
-                name="projectId"
-                value={form.projectId}
-                onChange={handleChange}
-                required
-            >
-                <option value="">Select a project</option>
-                {projects.map(project => (
-                    <option key={project.id} value={project.id}>
-                        {project.name}
-                    </option>
-                ))}
-            </select>
+            <div>
+                <select
+                    name="projectId"
+                    value={form.projectId}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select a project</option>
 
-            <button type="submit">Save</button>
-            <button type="button" onClick={onCancel}>Cancel</button>
+                    {projects.map(project => (
+                        <option key={project.id} value={project.id}>
+                            {project.name}
+                        </option>
+                    ))}
+                </select>
+
+                {errors.projectId && (
+                    <span style={{ color: 'red', fontSize: 12, display: 'block' }}>
+                        {errors.projectId}
+                    </span>
+                )}
+
+                {error && (
+                    <span style={{ color: 'red', fontSize: 12, display: 'block' }}>
+                        Error loading projects: {error.message}
+                    </span>
+                )}
+            </div>
+
+            <button type="submit" disabled={loading || !!error}>
+                Save
+            </button>
+            
+             <button type="button" onClick={onCancel}>
+                Cancel
+            </button>
         </form>
     );
-    
 }
