@@ -10,9 +10,9 @@ import { useQuery } from '@apollo/client';
 import { GET_TASKS } from '../graphql/queries';
 import TaskForm from '../components/TaskForm';
 import StatusBadge from '../components/StatusBadge';
-import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import { useMutation } from '@apollo/client';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 import {
   CREATE_TASK,
@@ -108,6 +108,8 @@ export default function TasksPage() {
 
     return (
         <div>
+            {loading && <LoadingSpinner />}
+            {error && <p style={{ color: 'red' }}>{error.message}</p>}
             <h1>Tasks</h1>
 
             <button onClick={() => dispatch(openTaskModal())}>+ New Task</button>

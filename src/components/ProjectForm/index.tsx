@@ -37,8 +37,10 @@ export default function ProjectForm({ onSubmit, onCancel, creating = false }: Pr
       />
 
       {/* Form actions */}
-      <button type="submit">Create Project</button>
-      
+      <button type="button" onClick={onCancel}>
+        Cancel
+      </button>
+
       <button type="submit" disabled={creating}>
         {creating ? 'Saving...' : 'Create Project'}
       </button>

@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import StatusBadge from '../components/StatusBadge';
 import { useQuery } from '@apollo/client';
 import { GET_PROJECT } from '../graphql/queries';
 import LoadingSpinner from '../components/LoadingSpinner';
